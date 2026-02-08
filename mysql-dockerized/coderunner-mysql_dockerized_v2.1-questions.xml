@@ -1,0 +1,1435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+  <question type="coderunner">
+    <name>
+      <text>01 - create MySQL users</text>
+    </name>
+    <questiontext format="markdown">
+      <text>Create the following users (default authentication method):
+
+| user | host | password |
+| ---- | ---- | -------- |
+| `andy`   | `%` | `pazzw0Rd` |
+| `ben`    | `%` | `pazzw0Rd` |
+| `collin` | `%` | `pazzw0Rd` |
+| `danny`  | `%` | `pazzw0Rd` |</text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mysql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>CREATE USER 'andy'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+
+CREATE USER 'ben'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+
+CREATE USER 'collin'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+
+CREATE USER 'danny'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>Dump from 'mysql.user':
+
+     User Host                 plugin
+1    andy    %  caching_sha2_password
+2     ben    %  caching_sha2_password
+3  collin    %  caching_sha2_password
+4   danny    %  caching_sha2_password
+
+Checking users connection:
+
++---------+
+| andy:   |
++---------+
+| success |
++---------+
+
++---------+
+| ben:    |
++---------+
+| success |
++---------+
+
++---------+
+| collin: |
++---------+
+| success |
++---------+
+
++---------+
+| danny:  |
++---------+
+| success |
++---------+
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[invoke_cursor_sql(__student_answer__, database=None)
+
+__sql_verify__ = """
+SELECT User, Host, plugin
+FROM   mysql.user
+WHERE  User IN ('andy', 'ben', 'collin', 'danny')
+       AND Host = '%';
+"""
+print("Dump from 'mysql.user':\n")
+print(invoke_cursor_sql(__sql_verify__, database=None))
+
+print("\nChecking users connection:\n")
+
+CFG['password'] = 'pazzw0Rd'
+
+clt = ['--user=andy' if x == '--user=root' else x for x in COMMAND_LINE_TOOL]
+print(invoke_commandline_sql("SELECT 'success' AS 'andy:';", database=None, command_line_tool=clt))
+
+clt = ['--user=ben' if x == '--user=root' else x for x in COMMAND_LINE_TOOL]
+print(invoke_commandline_sql("SELECT 'success' AS 'ben:';", database=None, command_line_tool=clt))
+
+clt = ['--user=collin' if x == '--user=root' else x for x in COMMAND_LINE_TOOL]
+print(invoke_commandline_sql("SELECT 'success' AS 'collin:';", database=None, command_line_tool=clt))
+
+clt = ['--user=danny' if x == '--user=root' else x for x in COMMAND_LINE_TOOL]
+print(invoke_commandline_sql("SELECT 'success' AS 'danny:';", database=None, command_line_tool=clt))
+]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>02 - GRANT table privileges to a user</text>
+    </name>
+    <questiontext format="markdown">
+      <text>Grant user `andy@%` privileges for `SELECT`, `DROP`, and `INSERT` operations on the `animals` table in the `smart_data` database.</text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mysql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>GRANT SELECT, DROP, INSERT
+   ON smart_data.animals
+   TO 'andy'@'%';</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>   User Host          Db Table_name Select  Drop Insert
+1  andy    %  smart_data    animals   true  true   true
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """
+CREATE DATABASE smart_data;
+
+USE smart_data;
+
+CREATE TABLE animals
+(
+    id      INT PRIMARY KEY,
+    name    VARCHAR(20),
+    owner   VARCHAR(20),
+    species VARCHAR(20),
+    sex     CHAR(1)
+);
+
+INSERT INTO animals VALUES
+(4, 'Fluffy'  , 'Harold' , 'cat' , 'f' ),
+(5, 'Claws'   , 'Gwen'   , 'cat' , 'm' ),
+(9, 'Buffy'   , 'Harold' , 'dog' , NULL );
+
+CREATE USER 'andy'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+"""
+invoke_cursor_sql(__db_prepare__, database=None)
+
+invoke_cursor_sql(__student_answer__, database="smart_data")
+
+__sql_verify__ = """
+SELECT User,
+       Host,
+       Db,
+       Table_name,
+       CASE WHEN FIND_IN_SET('Select', Table_priv) > 0
+            THEN 'true' ELSE 'false' END AS 'Select',
+       CASE WHEN FIND_IN_SET('Drop', Table_priv) > 0
+            THEN 'true' ELSE 'false' END AS 'Drop',
+       CASE WHEN FIND_IN_SET('Insert', Table_priv) > 0
+            THEN 'true' ELSE 'false' END AS 'Insert'
+FROM   mysql.tables_priv
+WHERE  User = 'andy'
+       AND Host = '%';
+"""
+print(invoke_cursor_sql(__sql_verify__, database=None))]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>03 - REVOKE table privilege from a user</text>
+    </name>
+    <questiontext format="markdown">
+      <text>Revoke the `INSERT` privilege on the `animals` table in the `smart_data` database from user `andy@%`.</text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mysql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>REVOKE INSERT
+   ON smart_data.animals
+   FROM 'andy'@'%'</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>   User Host          Db Table_name Select  Drop Insert
+1  andy    %  smart_data    animals   true  true  false
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """
+CREATE DATABASE smart_data;
+
+USE smart_data;
+
+CREATE TABLE animals
+(
+    id      INT PRIMARY KEY,
+    name    VARCHAR(20),
+    owner   VARCHAR(20),
+    species VARCHAR(20),
+    sex     CHAR(1)
+);
+
+INSERT INTO animals VALUES
+(4, 'Fluffy'  , 'Harold' , 'cat' , 'f' ),
+(5, 'Claws'   , 'Gwen'   , 'cat' , 'm' ),
+(9, 'Buffy'   , 'Harold' , 'dog' , NULL );
+
+CREATE USER 'andy'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+
+GRANT SELECT, DROP, INSERT
+   ON smart_data.animals
+   TO 'andy'@'%';
+"""
+invoke_cursor_sql(__db_prepare__, database=None)
+
+invoke_cursor_sql(__student_answer__, database="smart_data")
+
+__sql_verify__ = """
+SELECT User,
+       Host,
+       Db,
+       Table_name,
+       CASE WHEN FIND_IN_SET('Select', Table_priv) > 0
+            THEN 'true' ELSE 'false' END AS 'Select',
+       CASE WHEN FIND_IN_SET('Drop', Table_priv) > 0
+            THEN 'true' ELSE 'false' END AS 'Drop',
+       CASE WHEN FIND_IN_SET('Insert', Table_priv) > 0
+            THEN 'true' ELSE 'false' END AS 'Insert'
+FROM   mysql.tables_priv
+WHERE  User = 'andy'
+       AND Host = '%';
+"""
+print(invoke_cursor_sql(__sql_verify__, database=None))]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>04 - drop a MySQL user</text>
+    </name>
+    <questiontext format="markdown">
+      <text>Drop the user `ben@%`.</text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mysql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>DROP USER 'ben'@'%';</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>Dump from 'mysql.user':
+
+     User Host                 plugin
+1    andy    %  caching_sha2_password
+2  collin    %  caching_sha2_password
+3   danny    %  caching_sha2_password
+
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """
+CREATE USER 'andy'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+
+CREATE USER 'ben'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+
+CREATE USER 'collin'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+
+CREATE USER 'danny'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+"""
+invoke_cursor_sql(__db_prepare__, database=None)
+
+invoke_cursor_sql(__student_answer__, database=None)
+
+__sql_verify__ = """
+SELECT User, Host, plugin
+FROM   mysql.user
+WHERE  User IN ('andy', 'ben', 'collin', 'danny')
+       AND Host = '%';
+"""
+print("Dump from 'mysql.user':\n")
+print(invoke_cursor_sql(__sql_verify__, database=None))
+]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>05 - create roles with privileges</text>
+    </name>
+    <questiontext format="markdown">
+      <text>Create the following roles with the following privileges:
+
+| role name | object | privileges |
+| --------- | ------ | ---------- |
+| `read_all` | `bank` table, all columns | SELECT rows |
+| `write_all` | `bank` table, all columns | INSERT, UPDATE, DELETE rows |
+| `read_rodo` | `bank` table, columns `id`, `surname`, `address` | SELECT rows |
+| `read_view_rodo` | `personal_data` view, all columns | SELECT rows |</text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>2.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mysql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>CREATE ROLE 'read_all',
+            'write_all',
+            'read_rodo',
+            'read_view_rodo';
+
+GRANT SELECT
+   ON smart_data.bank
+   TO 'read_all';
+
+GRANT INSERT,
+      UPDATE,
+      DELETE
+   ON smart_data.bank
+   TO 'write_all';
+
+GRANT SELECT (id, surname, address)
+   ON smart_data.bank
+   TO 'read_rodo';
+
+GRANT SELECT
+   ON smart_data.personal_data
+   TO 'read_view_rodo';
+</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>Tables/views privileges:
+
+             Role Host          Db     Table/view Select Insert Update Delete
+1        read_all    %  smart_data           bank   true  false  false  false
+2       read_rodo    %  smart_data           bank  false  false  false  false
+3       write_all    %  smart_data           bank  false   true   true   true
+4  read_view_rodo    %  smart_data  personal_data   true  false  false  false
+
+Columns privileges:
+
+        Role Host          Db Table/view Column_name Select Insert Update Delete
+1  read_rodo    %  smart_data       bank     address   true  false  false  false
+2  read_rodo    %  smart_data       bank          id   true  false  false  false
+3  read_rodo    %  smart_data       bank     surname   true  false  false  false
+
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """
+CREATE DATABASE smart_data;
+
+USE smart_data;
+
+CREATE TABLE bank
+(
+    id      INT PRIMARY KEY,
+    surname VARCHAR(20),
+    address VARCHAR(40),
+    balance FLOAT,
+    pin     CHAR(4)
+);
+
+INSERT INTO bank VALUES
+(5, 'Smith'   , '4262 Grey Fox Farm Road, Houston, TX'  , 2000.0 , '1337' ),
+(7, 'Rocky'   , '1780 Bartlett Avenue, Troy, MI'        , 9640.5 , '5428' ),
+(8, 'Svenson' , '759 Stockert Hollow Road, Redmond, WA' ,  827.0 , '9822' );
+
+CREATE VIEW personal_data
+AS
+SELECT id,
+       surname,
+       address
+FROM   bank;
+"""
+invoke_cursor_sql(__db_prepare__, database=None)
+
+invoke_cursor_sql(__student_answer__, database=None)
+
+__sql_verify__ = """
+SELECT User AS Role,
+       Host,
+       Db,
+       Table_name AS 'Table/view',
+       CASE WHEN FIND_IN_SET('Select', Table_priv) > 0
+            THEN 'true' ELSE 'false' END AS 'Select',
+       CASE WHEN FIND_IN_SET('Insert', Table_priv) > 0
+            THEN 'true' ELSE 'false' END AS 'Insert',
+       CASE WHEN FIND_IN_SET('Update', Table_priv) > 0
+            THEN 'true' ELSE 'false' END AS 'Update',
+       CASE WHEN FIND_IN_SET('Delete', Table_priv) > 0
+            THEN 'true' ELSE 'false' END AS 'Delete'
+FROM   mysql.tables_priv
+WHERE  User IN ('read_all', 'read_rodo', 'read_view_rodo', 'write_all')
+       AND Host = '%'
+ORDER  BY Table_name;
+"""
+print('Tables/views privileges:\n')
+print(invoke_cursor_sql(__sql_verify__, database=None))
+
+__sql_verify__ = """
+SELECT User AS Role,
+       Host,
+       Db,
+       Table_name AS 'Table/view',
+       Column_name,
+       CASE WHEN FIND_IN_SET('Select', Column_priv) > 0
+            THEN 'true' ELSE 'false' END AS 'Select',
+       CASE WHEN FIND_IN_SET('Insert', Column_priv) > 0
+            THEN 'true' ELSE 'false' END AS 'Insert',
+       CASE WHEN FIND_IN_SET('Update', Column_priv) > 0
+            THEN 'true' ELSE 'false' END AS 'Update',
+       CASE WHEN FIND_IN_SET('Delete', Column_priv) > 0
+            THEN 'true' ELSE 'false' END AS 'Delete'
+FROM   mysql.columns_priv
+WHERE  User IN ('read_all', 'read_rodo', 'read_view_rodo', 'write_all')
+       AND Host = '%'
+ORDER  BY Table_name;
+"""
+print('\nColumns privileges:\n')
+print(invoke_cursor_sql(__sql_verify__, database=None))]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>06 - grant roles to users</text>
+    </name>
+    <questiontext format="markdown">
+      <text>Assign the following roles to users:
+
+| user | roles |
+| ---- | ----- |
+| `andy@%`   | `read_rodo` |
+| `collin@%` | `read_all`, `write_all` |
+| `danny@%`  | `read_view_rodo` |</text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mysql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>10</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>GRANT 'read_rodo'
+   TO 'andy'@'%';
+
+GRANT 'read_all',
+      'write_all'
+   TO 'collin'@'%';
+
+GRANT 'read_view_rodo'
+   TO 'danny'@'%';
+</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>User roles:
+
+       User              Role
+1    andy@%       read_rodo@%
+2  collin@%        read_all@%
+3  collin@%       write_all@%
+4   danny@%  read_view_rodo@%
+
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """
+CREATE USER 'andy'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+
+CREATE USER 'ben'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+
+CREATE USER 'collin'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+
+CREATE USER 'danny'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+
+CREATE DATABASE smart_data;
+
+USE smart_data;
+
+CREATE TABLE bank
+(
+    id      INT PRIMARY KEY,
+    surname VARCHAR(20),
+    address VARCHAR(40),
+    balance FLOAT,
+    pin     CHAR(4)
+);
+
+INSERT INTO bank VALUES
+(5, 'Smith'   , '4262 Grey Fox Farm Road, Houston, TX'  , 2000.0 , '1337' ),
+(7, 'Rocky'   , '1780 Bartlett Avenue, Troy, MI'        , 9640.5 , '5428' ),
+(8, 'Svenson' , '759 Stockert Hollow Road, Redmond, WA' ,  827.0 , '9822' );
+
+CREATE VIEW personal_data
+AS
+SELECT id,
+       surname,
+       address
+FROM   bank;
+
+CREATE ROLE 'read_all',
+            'write_all',
+            'read_rodo',
+            'read_view_rodo';
+
+GRANT SELECT
+   ON smart_data.bank
+   TO 'read_all';
+
+GRANT INSERT,
+      UPDATE,
+      DELETE
+   ON smart_data.bank
+   TO 'write_all';
+
+GRANT SELECT (id, surname, address)
+   ON smart_data.bank
+   TO 'read_rodo';
+
+GRANT SELECT
+   ON smart_data.personal_data
+   TO 'read_view_rodo';
+"""
+invoke_cursor_sql(__db_prepare__, database=None)
+
+invoke_cursor_sql(__student_answer__, database=None)
+
+__sql_verify__ = """
+SELECT CONCAT(TO_USER, '@', TO_HOST) AS User,
+       CONCAT(FROM_USER, '@', FROM_HOST) AS Role
+FROM   mysql.role_edges
+ORDER  BY User, Role;
+"""
+print('User roles:\n')
+print(invoke_cursor_sql(__sql_verify__, database=None))
+]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>07 - revoke a role from a user</text>
+    </name>
+    <questiontext format="markdown">
+      <text>Revoke the `read_all` role from user `collin@%` and display the roles currently assigned to them.</text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mysql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>REVOKE read_all
+FROM   'collin'@'%';
+
+SELECT CONCAT(TO_USER, '@', TO_HOST) AS User,
+       CONCAT(FROM_USER, '@', FROM_HOST) AS Role
+FROM   mysql.role_edges
+WHERE  TO_USER = 'collin'
+       AND TO_Host = '%'
+ORDER  BY Role;
+</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>       User         Role
+1  collin@%  write_all@%
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """
+CREATE USER 'andy'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+
+CREATE USER 'ben'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+
+CREATE USER 'collin'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+
+CREATE USER 'danny'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+
+CREATE DATABASE smart_data;
+
+USE smart_data;
+
+CREATE TABLE bank
+(
+    id      INT PRIMARY KEY,
+    surname VARCHAR(20),
+    address VARCHAR(40),
+    balance FLOAT,
+    pin     CHAR(4)
+);
+
+INSERT INTO bank VALUES
+(5, 'Smith'   , '4262 Grey Fox Farm Road, Houston, TX'  , 2000.0 , '1337' ),
+(7, 'Rocky'   , '1780 Bartlett Avenue, Troy, MI'        , 9640.5 , '5428' ),
+(8, 'Svenson' , '759 Stockert Hollow Road, Redmond, WA' ,  827.0 , '9822' );
+
+CREATE VIEW personal_data
+AS
+SELECT id,
+       surname,
+       address
+FROM   bank;
+
+CREATE ROLE 'read_all',
+            'write_all',
+            'read_rodo',
+            'read_view_rodo';
+
+GRANT SELECT
+   ON smart_data.bank
+   TO 'read_all';
+
+GRANT INSERT,
+      UPDATE,
+      DELETE
+   ON smart_data.bank
+   TO 'write_all';
+
+GRANT SELECT (id, surname, address)
+   ON smart_data.bank
+   TO 'read_rodo';
+
+GRANT SELECT
+   ON smart_data.personal_data
+   TO 'read_view_rodo';
+
+GRANT 'read_rodo'
+   TO 'andy'@'%';
+
+GRANT 'read_all',
+      'write_all'
+   TO 'collin'@'%';
+
+GRANT 'read_view_rodo'
+   TO 'danny'@'%';
+"""
+invoke_cursor_sql(__db_prepare__, database=None)
+
+print(invoke_cursor_sql(__student_answer__, database=None))
+]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>08 - GRANT column-level privileges</text>
+    </name>
+    <questiontext format="markdown">
+      <text>Grant user `andy@%` `SELECT` privilege only on the `id` and `surname` columns of the `bank` table in the `smart_data` database.</text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mysql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>GRANT SELECT (id, surname)
+   ON smart_data.bank
+   TO 'andy'@'%';</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>  Column_name Column_priv
+1          id    {Select}
+2     surname    {Select}
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """
+CREATE DATABASE smart_data;
+
+USE smart_data;
+
+CREATE TABLE bank
+(
+    id      INT PRIMARY KEY,
+    surname VARCHAR(20),
+    address VARCHAR(40),
+    balance FLOAT,
+    pin     CHAR(4)
+);
+
+INSERT INTO bank VALUES
+(5, 'Smith'   , '4262 Grey Fox Farm Road, Houston, TX'  , 2000.0 , '1337' ),
+(7, 'Rocky'   , '1780 Bartlett Avenue, Troy, MI'        , 9640.5 , '5428' ),
+(8, 'Svenson' , '759 Stockert Hollow Road, Redmond, WA' ,  827.0 , '9822' );
+
+CREATE USER 'andy'@'%'
+IDENTIFIED BY 'pazzw0Rd';
+"""
+invoke_cursor_sql(__db_prepare__, database=None)
+
+invoke_cursor_sql(__student_answer__, database="smart_data")
+
+__sql_verify__ = """
+SELECT Column_name, Column_priv
+FROM   mysql.columns_priv
+WHERE  User = 'andy'
+       AND Host = '%'
+ORDER  BY Column_name;
+"""
+print(invoke_cursor_sql(__sql_verify__, database=None))
+]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>09 - mysqlpump: backup table data using wildcard</text>
+    </name>
+    <questiontext format="markdown">
+      <text>Use `mysqlpump` to create a backup of the data stored in tables in the `academy` database whose names start with `ye` (use wildcard characters).</text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mysql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>15</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload>mysqlpump --default-parallelism=1 --skip-tz-utc --skip-set-charset --skip-watch-progress ...</answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>mysqlpump --default-parallelism=1 --skip-tz-utc --skip-set-charset --skip-watch-progress --include-databases=academy --include-tables=ye% --no-create-db --no-create-info --skip-routines</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text><![CDATA[-- comment
+-- comment
+-- comment
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE;
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET @@SESSION.SQL_LOG_BIN= 0;
+INSERT INTO `academy`.`ye19` VALUES (1);
+INSERT INTO `academy`.`ye20` VALUES (1);
+INSERT INTO `academy`.`ye21` VALUES (1);
+INSERT INTO `academy`.`ye22` VALUES (1);
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+SET SQL_MODE=@OLD_SQL_MODE;
+-- comment
+]]></text>
+      </expected>
+      <extra>
+                <text><![CDATA[
+__student_answer__ = __student_answer__.strip()
+if not __student_answer__.startswith('mysqlpump'):
+    sys.stderr.write("Command must start with 'mysqlpump'\n")
+elif __student_answer__.count('\n') > 0:
+    sys.stderr.write("Multiline command attempt\n")
+else:
+    __server_prepare__ = """
+DROP DATABASE IF EXISTS academy;
+CREATE DATABASE academy;
+
+USE academy;
+
+CREATE TABLE profs (x INT);
+CREATE TABLE studs (x INT);
+CREATE TABLE ye19 (x INT);
+CREATE TABLE ye20 (x INT);
+CREATE TABLE ye21 (x INT);
+CREATE TABLE ye22 (x INT);
+
+INSERT INTO profs VALUES (1);
+INSERT INTO studs VALUES (1);
+INSERT INTO ye19 VALUES (1);
+INSERT INTO ye20 VALUES (1);
+INSERT INTO ye21 VALUES (1);
+INSERT INTO ye22 VALUES (1);
+"""
+    invoke_commandline_sql(__server_prepare__, database=None)
+
+    clt = ['/usr/bin/mysqlpump'] + COMMAND_LINE_TOOL[1:4] + ['--protocol=TCP']
+    clt = clt + __student_answer__.split()[1:]
+
+    cmd_output = invoke_commandline_sql(None, database=None, command_line_tool=clt, ignore_warnings=True)
+    import re
+    print(re.sub("^--.*", "-- comment", cmd_output, flags=re.MULTILINE))
+]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>10 - mysqlpump: backup user account</text>
+    </name>
+    <questiontext format="markdown">
+      <text>Use `mysqlpump` to create a backup of the `CREATE USER` and `GRANT` statements for user `kyle`.</text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mysql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>15</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload>mysqlpump --default-parallelism=1 --skip-tz-utc --skip-set-charset --skip-watch-progress ...</answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>mysqlpump --default-parallelism=1 --skip-tz-utc --skip-set-charset --skip-watch-progress --exclude-databases=% --users --include-users=kyle</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text><![CDATA[-- comment
+-- comment
+-- comment
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE;
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET @@SESSION.SQL_LOG_BIN= 0;
+CREATE USER `kyle`@`%` IDENTIFIED WITH 'auth_socket' REQUIRE NONE PASSWORD EXPIRE DEFAULT ACCOUNT UNLOCK PASSWORD HISTORY DEFAULT PASSWORD REUSE INTERVAL DEFAULT PASSWORD REQUIRE CURRENT DEFAULT;
+GRANT USAGE ON *.* TO `kyle`@`%`;
+GRANT SELECT, INSERT, UPDATE ON `academy`.* TO `kyle`@`%`;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+SET SQL_MODE=@OLD_SQL_MODE;
+-- comment
+]]></text>
+      </expected>
+      <extra>
+                <text><![CDATA[
+__student_answer__ = __student_answer__.strip()
+if not __student_answer__.startswith('mysqlpump'):
+    sys.stderr.write("Command must start with 'mysqlpump'\n")
+elif __student_answer__.count('\n') > 0:
+    sys.stderr.write("Multiline command attempt\n")
+else:
+    __server_prepare__ = """
+INSTALL PLUGIN auth_socket SONAME 'auth_socket.so';
+
+DROP DATABASE IF EXISTS academy;
+CREATE DATABASE academy;
+
+USE academy;
+
+CREATE TABLE profs (x INT);
+CREATE TABLE studs (x INT);
+CREATE TABLE ye19 (x INT);
+CREATE TABLE ye20 (x INT);
+CREATE TABLE ye21 (x INT);
+CREATE TABLE ye22 (x INT);
+
+INSERT INTO profs VALUES (1);
+INSERT INTO studs VALUES (1);
+INSERT INTO ye19 VALUES (1);
+INSERT INTO ye20 VALUES (1);
+INSERT INTO ye21 VALUES (1);
+INSERT INTO ye22 VALUES (1);
+
+DROP USER IF EXISTS 'kyle'@'%';
+
+CREATE USER 'kyle'@'%'
+IDENTIFIED WITH auth_socket;
+
+GRANT SELECT, INSERT, UPDATE
+   ON academy.*
+   TO 'kyle'@'%';
+"""
+    invoke_commandline_sql(__server_prepare__, database=None)
+
+    clt = ['/usr/bin/mysqlpump'] + COMMAND_LINE_TOOL[1:4] + ['--protocol=TCP']
+    clt = clt + __student_answer__.split()[1:]
+
+    cmd_output = invoke_commandline_sql(None, database=None, command_line_tool=clt, ignore_warnings=True)
+    import re
+    print(re.sub("^--.*", "-- comment", cmd_output, flags=re.MULTILINE))
+]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+</quiz>

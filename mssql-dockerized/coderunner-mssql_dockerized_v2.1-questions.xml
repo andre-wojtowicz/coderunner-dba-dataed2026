@@ -1,0 +1,1620 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+  <question type="coderunner">
+    <name>
+      <text>01 - create SQL Server logins</text>
+    </name>
+    <questiontext format="markdown">
+      <text><![CDATA[Create the following SQL Server logins with SQL Server Authentication:
+
+| login | password |
+| ----- | -------- |
+| `amara` | `P@zzw0rd` |
+| `barry` | `P@zzw0rd` |
+| `clark` | `P@zzw0rd` |
+| `dante` | `P@zzw0rd` |
+
+> Use `sqlcmd` syntax including the `go` command.]]></text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mssql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>CREATE LOGIN amara WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN barry WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN clark WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN dante WITH PASSWORD = 'P@zzw0rd';
+go
+</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>Dump from 'sys.sql_logins':
+
+    name  type_desc  is_disabled
+1  amara  SQL_LOGIN        False
+2  barry  SQL_LOGIN        False
+3  clark  SQL_LOGIN        False
+4  dante  SQL_LOGIN        False
+
+Checking users connection:
+
+amara:
+-------
+success
+
+(1 rows affected)
+
+barry:
+-------
+success
+
+(1 rows affected)
+
+clark:
+-------
+success
+
+(1 rows affected)
+
+dante:
+-------
+success
+
+(1 rows affected)
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[invoke_commandline_sql(__student_answer__, database=None)
+
+__sql_verify__ = """
+SELECT name,
+       type_desc,
+       is_disabled
+FROM sys.sql_logins
+WHERE name IN('amara','barry','clark','dante');
+"""
+print("Dump from 'sys.sql_logins':\n")
+print(invoke_cursor_sql(__sql_verify__, database=None))
+
+print("\nChecking users connection:\n")
+
+CFG['password'] = 'P@zzw0rd'
+
+CFG['user'] = 'amara'
+clt = ['/opt/mssql-tools/bin/sqlcmd', '-S', 'tcp:'+CFG['server']+','+str(CFG['port']), '-U', CFG['user'], '-P', CFG['password'], '-d', CFG['database'], '-l', '4', '-t', '4', '-b', '-k1', '-r1', '-C', '-i'+DB_SCRIPT_FILENAME]
+print(invoke_commandline_sql("SELECT 'success' AS 'amara:';", database=None, command_line_tool=clt))
+
+CFG['user'] = 'barry'
+clt = ['/opt/mssql-tools/bin/sqlcmd', '-S', 'tcp:'+CFG['server']+','+str(CFG['port']), '-U', CFG['user'], '-P', CFG['password'], '-d', CFG['database'], '-l', '4', '-t', '4', '-b', '-k1', '-r1', '-C', '-i'+DB_SCRIPT_FILENAME]
+print(invoke_commandline_sql("SELECT 'success' AS 'barry:';", database=None, command_line_tool=clt))
+
+CFG['user'] = 'clark'
+clt = ['/opt/mssql-tools/bin/sqlcmd', '-S', 'tcp:'+CFG['server']+','+str(CFG['port']), '-U', CFG['user'], '-P', CFG['password'], '-d', CFG['database'], '-l', '4', '-t', '4', '-b', '-k1', '-r1', '-C', '-i'+DB_SCRIPT_FILENAME]
+print(invoke_commandline_sql("SELECT 'success' AS 'clark:';", database=None, command_line_tool=clt))
+
+CFG['user'] = 'dante'
+clt = ['/opt/mssql-tools/bin/sqlcmd', '-S', 'tcp:'+CFG['server']+','+str(CFG['port']), '-U', CFG['user'], '-P', CFG['password'], '-d', CFG['database'], '-l', '4', '-t', '4', '-b', '-k1', '-r1', '-C', '-i'+DB_SCRIPT_FILENAME]
+print(invoke_commandline_sql("SELECT 'success' AS 'dante:';", database=None, command_line_tool=clt))]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>02 - create database users mapped to logins</text>
+    </name>
+    <questiontext format="markdown">
+      <text><![CDATA[Create the following database user accounts in the `important_data` database mapped to existing server logins:
+
+* `amara`
+* `barry`
+* `clark`
+
+> Use `sqlcmd` syntax including the `go` command.]]></text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mssql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>CREATE USER amara FOR LOGIN amara;
+CREATE USER barry FOR LOGIN barry;
+CREATE USER clark FOR LOGIN clark;
+go
+</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>Dump from 'sys.database_principals':
+
+                 name type_desc authentication_type_desc
+1                 dbo  SQL_USER                 INSTANCE
+2               guest  SQL_USER                     NONE
+3  INFORMATION_SCHEMA  SQL_USER                     NONE
+4                 sys  SQL_USER                     NONE
+5               amara  SQL_USER                 INSTANCE
+6               barry  SQL_USER                 INSTANCE
+7               clark  SQL_USER                 INSTANCE
+
+Checking database user connections:
+
+amara:
+-------
+success
+
+(1 rows affected)
+
+barry:
+-------
+success
+
+(1 rows affected)
+
+clark:
+-------
+success
+
+(1 rows affected)
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """
+CREATE DATABASE important_data;
+go
+USE important_data;
+go
+CREATE TABLE cars
+(
+    id            INT PRIMARY KEY,
+    manufacturer  VARCHAR(50),
+    model         VARCHAR(50),
+    type          VARCHAR(50),
+    horsepower    INT,
+);
+go
+INSERT INTO cars VALUES
+(3, 'Acura'  , 'ILX'  , 'Sedan' , 201 ),
+(7, 'Fiat'   , '500X' , 'SUV'   , 150 ),
+(8, 'Lexus'  , 'RC'   , 'Coupe' , 467 );
+go
+CREATE TABLE houses
+(
+    id              INT PRIMARY KEY,
+    owner_surname   VARCHAR(50),
+    address         VARCHAR(100),
+    area            FLOAT,
+    bedrooms        int
+);
+go
+INSERT INTO houses VALUES
+(2, 'Markowitz' , '293  Davis Place, Toledo, OH'                , 156.2  , 3),
+(3, 'Earl'      , '2071  Rockford Mountain Lane, Appleton, WI'  , 54.5   , 1),
+(5, 'Hampton'   , '930  Sunny Glen Lane, Cleveland, OH'         , 111.9  , 2);
+go
+CREATE LOGIN amara WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN barry WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN clark WITH PASSWORD = 'P@zzw0rd';
+go
+ALTER SERVER ROLE dbcreator ADD MEMBER clark;
+go
+"""
+
+invoke_commandline_sql(__db_prepare__, database=None)
+
+invoke_commandline_sql(__student_answer__, database='important_data')
+
+__sql_verify__ = """
+SELECT name,
+       type_desc,
+       authentication_type_desc
+FROM sys.database_principals
+WHERE type_desc = 'SQL_USER';
+"""
+
+print("Dump from 'sys.database_principals':\n")
+print(invoke_cursor_sql(__sql_verify__, database='important_data'))
+
+print("\nChecking database user connections:\n")
+
+CFG['password'] = 'P@zzw0rd'
+CFG['database'] = 'important_data'
+
+CFG['user'] = 'amara'
+clt = ['/opt/mssql-tools/bin/sqlcmd', '-S', 'tcp:'+CFG['server']+','+str(CFG['port']), '-U', CFG['user'], '-P', CFG['password'], '-d', CFG['database'], '-l', '4', '-t', '4', '-b', '-k1', '-r1', '-C', '-i'+DB_SCRIPT_FILENAME]
+print(invoke_commandline_sql("SELECT 'success' AS 'amara:';", database=None, command_line_tool=clt))
+
+CFG['user'] = 'barry'
+clt = ['/opt/mssql-tools/bin/sqlcmd', '-S', 'tcp:'+CFG['server']+','+str(CFG['port']), '-U', CFG['user'], '-P', CFG['password'], '-d', CFG['database'], '-l', '4', '-t', '4', '-b', '-k1', '-r1', '-C', '-i'+DB_SCRIPT_FILENAME]
+print(invoke_commandline_sql("SELECT 'success' AS 'barry:';", database=None, command_line_tool=clt))
+
+CFG['user'] = 'clark'
+clt = ['/opt/mssql-tools/bin/sqlcmd', '-S', 'tcp:'+CFG['server']+','+str(CFG['port']), '-U', CFG['user'], '-P', CFG['password'], '-d', CFG['database'], '-l', '4', '-t', '4', '-b', '-k1', '-r1', '-C', '-i'+DB_SCRIPT_FILENAME]
+print(invoke_commandline_sql("SELECT 'success' AS 'clark:';", database=None, command_line_tool=clt))]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>03 - add database users to roles</text>
+    </name>
+    <questiontext format="markdown">
+      <text><![CDATA[Add database user accounts in the `important_data` database to the following roles:
+
+| account | role |
+| ------- | ---- |
+| `amara` | `db_owner` |
+| `barry` | `db_owner` |
+| `clark` | `db_datareader` and `db_securityadmin` |
+
+> Use `sqlcmd` syntax including the `go` command.]]></text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mssql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>ALTER ROLE db_owner ADD MEMBER amara;
+ALTER ROLE db_owner ADD MEMBER barry;
+ALTER ROLE db_datareader ADD MEMBER clark;
+ALTER ROLE db_securityadmin ADD MEMBER clark;
+go
+</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>           RoleName UserName
+1          db_owner      dbo
+2          db_owner    amara
+3          db_owner    barry
+4  db_securityadmin    clark
+5     db_datareader    clark
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """
+CREATE DATABASE important_data;
+go
+USE important_data;
+go
+CREATE TABLE cars
+(
+    id            INT PRIMARY KEY,
+    manufacturer  VARCHAR(50),
+    model         VARCHAR(50),
+    type          VARCHAR(50),
+    horsepower    INT,
+);
+go
+INSERT INTO cars VALUES
+(3, 'Acura'  , 'ILX'  , 'Sedan' , 201 ),
+(7, 'Fiat'   , '500X' , 'SUV'   , 150 ),
+(8, 'Lexus'  , 'RC'   , 'Coupe' , 467 );
+go
+CREATE TABLE houses
+(
+    id              INT PRIMARY KEY,
+    owner_surname   VARCHAR(50),
+    address         VARCHAR(100),
+    area            FLOAT,
+    bedrooms        int
+);
+go
+INSERT INTO houses VALUES
+(2, 'Markowitz' , '293  Davis Place, Toledo, OH'                , 156.2  , 3),
+(3, 'Earl'      , '2071  Rockford Mountain Lane, Appleton, WI'  , 54.5   , 1),
+(5, 'Hampton'   , '930  Sunny Glen Lane, Cleveland, OH'         , 111.9  , 2);
+go
+CREATE LOGIN amara WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN barry WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN clark WITH PASSWORD = 'P@zzw0rd';
+go
+ALTER SERVER ROLE dbcreator ADD MEMBER clark;
+go
+USE important_data;
+go
+CREATE USER amara FOR LOGIN amara;
+CREATE USER barry FOR LOGIN barry;
+CREATE USER clark FOR LOGIN clark;
+go
+"""
+
+invoke_commandline_sql(__db_prepare__, database=None)
+
+invoke_commandline_sql(__student_answer__, database='important_data')
+
+__sql_verify__ = """
+SELECT p1.name AS RoleName,
+       p2.name AS UserName
+FROM   sys.database_role_members AS drm
+       JOIN sys.database_principals AS p1
+         ON drm.role_principal_id = p1.principal_id
+       JOIN sys.database_principals AS p2
+         ON drm.member_principal_id = p2.principal_id;
+"""
+
+print(invoke_cursor_sql(__sql_verify__, database='important_data'))
+]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>04 - GRANT permissions on a table</text>
+    </name>
+    <questiontext format="markdown">
+      <text><![CDATA[Grant permissions allowing `SELECT` and `INSERT` on the `houses` table in the `important_data` database to user account `barry`.
+
+> Use `sqlcmd` syntax including the `go` command.]]></text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mssql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>GRANT SELECT ON OBJECT::houses TO barry;
+GRANT INSERT ON OBJECT::houses TO barry;
+go
+</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>  entity_name subentity_name permission_name
+1      houses                         SELECT
+2      houses                         INSERT
+3      houses             id          SELECT
+4      houses  owner_surname          SELECT
+5      houses        address          SELECT
+6      houses           area          SELECT
+7      houses       bedrooms          SELECT
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """
+CREATE DATABASE important_data;
+go
+USE important_data;
+go
+CREATE TABLE cars
+(
+    id            INT PRIMARY KEY,
+    manufacturer  VARCHAR(50),
+    model         VARCHAR(50),
+    type          VARCHAR(50),
+    horsepower    INT,
+);
+go
+INSERT INTO cars VALUES
+(3, 'Acura'  , 'ILX'  , 'Sedan' , 201 ),
+(7, 'Fiat'   , '500X' , 'SUV'   , 150 ),
+(8, 'Lexus'  , 'RC'   , 'Coupe' , 467 );
+go
+CREATE TABLE houses
+(
+    id              INT PRIMARY KEY,
+    owner_surname   VARCHAR(50),
+    address         VARCHAR(100),
+    area            FLOAT,
+    bedrooms        int
+);
+go
+INSERT INTO houses VALUES
+(2, 'Markowitz' , '293  Davis Place, Toledo, OH'                , 156.2  , 3),
+(3, 'Earl'      , '2071  Rockford Mountain Lane, Appleton, WI'  , 54.5   , 1),
+(5, 'Hampton'   , '930  Sunny Glen Lane, Cleveland, OH'         , 111.9  , 2);
+go
+CREATE LOGIN amara WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN barry WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN clark WITH PASSWORD = 'P@zzw0rd';
+go
+ALTER SERVER ROLE dbcreator ADD MEMBER clark;
+go
+USE important_data;
+go
+CREATE USER amara FOR LOGIN amara;
+CREATE USER barry FOR LOGIN barry;
+CREATE USER clark FOR LOGIN clark;
+go
+ALTER ROLE db_owner ADD MEMBER amara;
+ALTER ROLE db_owner ADD MEMBER barry;
+ALTER ROLE db_datareader ADD MEMBER clark;
+ALTER ROLE db_securityadmin ADD MEMBER clark;
+go
+ALTER ROLE db_owner DROP MEMBER barry;
+go
+"""
+
+invoke_commandline_sql(__db_prepare__, database=None)
+
+invoke_commandline_sql(__student_answer__, database='important_data')
+
+__sql_verify__ = """EXECUTE AS USER = 'barry';
+SELECT * FROM fn_my_permissions('houses', 'object');
+"""
+
+print(invoke_cursor_sql(__sql_verify__, database='important_data'))
+]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>05 - DENY column-level permission</text>
+    </name>
+    <questiontext format="markdown">
+      <text><![CDATA[Grant a **denying** permission for `SELECT` on the `address` column of the `houses` table in the `important_data` database to user account `barry`.
+
+> Use `sqlcmd` syntax including the `go` command.]]></text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mssql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>DENY SELECT ON OBJECT::houses(address) TO barry;
+go
+</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>                       PermissionsForObjects
+1  GRANT INSERT ON [dbo].[houses] TO [barry]
+2  GRANT SELECT ON [dbo].[houses] TO [barry]
+                                PermissionForColumns
+1  DENY SELECT ON [dbo].[houses](address) TO [barry]
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """
+CREATE DATABASE important_data;
+go
+USE important_data;
+go
+CREATE TABLE cars
+(
+    id            INT PRIMARY KEY,
+    manufacturer  VARCHAR(50),
+    model         VARCHAR(50),
+    type          VARCHAR(50),
+    horsepower    INT,
+);
+go
+INSERT INTO cars VALUES
+(3, 'Acura'  , 'ILX'  , 'Sedan' , 201 ),
+(7, 'Fiat'   , '500X' , 'SUV'   , 150 ),
+(8, 'Lexus'  , 'RC'   , 'Coupe' , 467 );
+go
+CREATE TABLE houses
+(
+    id              INT PRIMARY KEY,
+    owner_surname   VARCHAR(50),
+    address         VARCHAR(100),
+    area            FLOAT,
+    bedrooms        int
+);
+go
+INSERT INTO houses VALUES
+(2, 'Markowitz' , '293  Davis Place, Toledo, OH'                , 156.2  , 3),
+(3, 'Earl'      , '2071  Rockford Mountain Lane, Appleton, WI'  , 54.5   , 1),
+(5, 'Hampton'   , '930  Sunny Glen Lane, Cleveland, OH'         , 111.9  , 2);
+go
+CREATE LOGIN amara WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN barry WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN clark WITH PASSWORD = 'P@zzw0rd';
+go
+ALTER SERVER ROLE dbcreator ADD MEMBER clark;
+go
+USE important_data;
+go
+CREATE USER amara FOR LOGIN amara;
+CREATE USER barry FOR LOGIN barry;
+CREATE USER clark FOR LOGIN clark;
+go
+ALTER ROLE db_owner ADD MEMBER amara;
+ALTER ROLE db_owner ADD MEMBER barry;
+ALTER ROLE db_datareader ADD MEMBER clark;
+ALTER ROLE db_securityadmin ADD MEMBER clark;
+go
+ALTER ROLE db_owner DROP MEMBER barry;
+go
+GRANT SELECT ON OBJECT::houses TO barry;
+GRANT INSERT ON OBJECT::houses TO barry;
+go
+"""
+
+invoke_commandline_sql(__db_prepare__, database=None)
+
+invoke_commandline_sql(__student_answer__, database='important_data')
+
+__sql_verify__ = """
+SELECT
+  (
+    dp.state_desc + ' ' +
+    dp.permission_name collate latin1_general_cs_as +
+    ' ON ' + '[' + s.name + ']' + '.' + '[' + o.name + ']' +
+    ' TO ' + '[' + dpr.name + ']'
+  ) AS PermissionsForObjects
+FROM sys.database_permissions AS dp
+  INNER JOIN sys.objects AS o ON dp.major_id=o.object_id
+  INNER JOIN sys.schemas AS s ON o.schema_id = s.schema_id
+  INNER JOIN sys.database_principals AS dpr ON dp.grantee_principal_id=dpr.principal_id
+WHERE 1=1
+    AND o.name IN ('houses')
+    AND dp.minor_id = 0
+ORDER BY dpr.name;
+"""
+
+__sql_verify2__ = """
+SELECT
+  (
+    dp.state_desc + ' ' +
+    dp.permission_name collate latin1_general_cs_as +
+    ' ON ' + '[' + s.name + ']' + '.' + '[' + o.name + '](' + c.name + ')' +
+    ' TO ' + '[' + dpr.name + ']'
+  ) AS PermissionForColumns
+FROM sys.database_permissions AS dp
+  INNER JOIN sys.columns AS c ON dp.major_id=c.object_id AND dp.minor_id=c.column_id
+  INNER JOIN sys.objects AS o ON dp.major_id=o.object_id
+  INNER JOIN sys.schemas AS s ON o.schema_id = s.schema_id
+  INNER JOIN sys.database_principals AS dpr ON dp.grantee_principal_id=dpr.principal_id
+WHERE 1=1
+    AND o.name IN ('houses')
+ORDER BY dpr.name;
+"""
+
+print(invoke_cursor_sql(__sql_verify__, database='important_data'))
+print(invoke_cursor_sql(__sql_verify2__, database='important_data'))
+]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>06 - REVOKE permission on a table</text>
+    </name>
+    <questiontext format="markdown">
+      <text><![CDATA[Revoke `SELECT` permission on the `houses` table in the `important_data` database from user account `barry`.
+
+> Use `sqlcmd` syntax including the `go` command.]]></text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mssql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>REVOKE SELECT ON OBJECT::houses TO barry;
+go
+</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>                       PermissionsForObjects
+1  GRANT INSERT ON [dbo].[houses] TO [barry]
+PermissionForColumns
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """
+CREATE DATABASE important_data;
+go
+USE important_data;
+go
+CREATE TABLE cars
+(
+    id            INT PRIMARY KEY,
+    manufacturer  VARCHAR(50),
+    model         VARCHAR(50),
+    type          VARCHAR(50),
+    horsepower    INT,
+);
+go
+INSERT INTO cars VALUES
+(3, 'Acura'  , 'ILX'  , 'Sedan' , 201 ),
+(7, 'Fiat'   , '500X' , 'SUV'   , 150 ),
+(8, 'Lexus'  , 'RC'   , 'Coupe' , 467 );
+go
+CREATE TABLE houses
+(
+    id              INT PRIMARY KEY,
+    owner_surname   VARCHAR(50),
+    address         VARCHAR(100),
+    area            FLOAT,
+    bedrooms        int
+);
+go
+INSERT INTO houses VALUES
+(2, 'Markowitz' , '293  Davis Place, Toledo, OH'                , 156.2  , 3),
+(3, 'Earl'      , '2071  Rockford Mountain Lane, Appleton, WI'  , 54.5   , 1),
+(5, 'Hampton'   , '930  Sunny Glen Lane, Cleveland, OH'         , 111.9  , 2);
+go
+CREATE LOGIN amara WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN barry WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN clark WITH PASSWORD = 'P@zzw0rd';
+go
+ALTER SERVER ROLE dbcreator ADD MEMBER clark;
+go
+USE important_data;
+go
+CREATE USER amara FOR LOGIN amara;
+CREATE USER barry FOR LOGIN barry;
+CREATE USER clark FOR LOGIN clark;
+go
+ALTER ROLE db_owner ADD MEMBER amara;
+ALTER ROLE db_owner ADD MEMBER barry;
+ALTER ROLE db_datareader ADD MEMBER clark;
+ALTER ROLE db_securityadmin ADD MEMBER clark;
+go
+ALTER ROLE db_owner DROP MEMBER barry;
+go
+GRANT SELECT ON OBJECT::houses TO barry;
+GRANT INSERT ON OBJECT::houses TO barry;
+go
+DENY SELECT ON OBJECT::houses(address) TO barry;
+go
+"""
+
+invoke_commandline_sql(__db_prepare__, database=None)
+
+invoke_commandline_sql(__student_answer__, database='important_data')
+
+__sql_verify__ = """
+SELECT
+  (
+    dp.state_desc + ' ' +
+    dp.permission_name collate latin1_general_cs_as +
+    ' ON ' + '[' + s.name + ']' + '.' + '[' + o.name + ']' +
+    ' TO ' + '[' + dpr.name + ']'
+  ) AS PermissionsForObjects
+FROM sys.database_permissions AS dp
+  INNER JOIN sys.objects AS o ON dp.major_id=o.object_id
+  INNER JOIN sys.schemas AS s ON o.schema_id = s.schema_id
+  INNER JOIN sys.database_principals AS dpr ON dp.grantee_principal_id=dpr.principal_id
+WHERE 1=1
+    AND o.name IN ('houses')
+    AND dp.minor_id = 0
+ORDER BY dpr.name;
+"""
+
+__sql_verify2__ = """
+SELECT
+  (
+    dp.state_desc + ' ' +
+    dp.permission_name collate latin1_general_cs_as +
+    ' ON ' + '[' + s.name + ']' + '.' + '[' + o.name + '](' + c.name + ')' +
+    ' TO ' + '[' + dpr.name + ']'
+  ) AS PermissionForColumns
+FROM sys.database_permissions AS dp
+  INNER JOIN sys.columns AS c ON dp.major_id=c.object_id AND dp.minor_id=c.column_id
+  INNER JOIN sys.objects AS o ON dp.major_id=o.object_id
+  INNER JOIN sys.schemas AS s ON o.schema_id = s.schema_id
+  INNER JOIN sys.database_principals AS dpr ON dp.grantee_principal_id=dpr.principal_id
+WHERE 1=1
+    AND o.name IN ('houses')
+ORDER BY dpr.name;
+"""
+
+print(invoke_cursor_sql(__sql_verify__, database='important_data'))
+print(invoke_cursor_sql(__sql_verify2__, database='important_data'))
+]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>07 - change login password</text>
+    </name>
+    <questiontext format="markdown">
+      <text><![CDATA[Change the password of the `clark` login to `NoweP@zzw0rd`.
+
+> Use `sqlcmd` syntax including the `go` command.
+
+> The command will be tested from a login account that allows changing the password without knowing the current one.]]></text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mssql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>ALTER LOGIN clark WITH PASSWORD = 'NoweP@zzw0rd';
+go
+</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>Dump from 'sys.sql_logins':
+
+    name  type_desc  is_disabled
+1  amara  SQL_LOGIN        False
+2  barry  SQL_LOGIN        False
+3  clark  SQL_LOGIN        False
+
+Checking users connection:
+
+clark:
+-------
+success
+
+(1 rows affected)
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """
+CREATE DATABASE important_data;
+go
+USE important_data;
+go
+CREATE TABLE cars
+(
+    id            INT PRIMARY KEY,
+    manufacturer  VARCHAR(50),
+    model         VARCHAR(50),
+    type          VARCHAR(50),
+    horsepower    INT,
+);
+go
+INSERT INTO cars VALUES
+(3, 'Acura'  , 'ILX'  , 'Sedan' , 201 ),
+(7, 'Fiat'   , '500X' , 'SUV'   , 150 ),
+(8, 'Lexus'  , 'RC'   , 'Coupe' , 467 );
+go
+CREATE TABLE houses
+(
+    id              INT PRIMARY KEY,
+    owner_surname   VARCHAR(50),
+    address         VARCHAR(100),
+    area            FLOAT,
+    bedrooms        int
+);
+go
+INSERT INTO houses VALUES
+(2, 'Markowitz' , '293  Davis Place, Toledo, OH'                , 156.2  , 3),
+(3, 'Earl'      , '2071  Rockford Mountain Lane, Appleton, WI'  , 54.5   , 1),
+(5, 'Hampton'   , '930  Sunny Glen Lane, Cleveland, OH'         , 111.9  , 2);
+go
+CREATE LOGIN amara WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN barry WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN clark WITH PASSWORD = 'P@zzw0rd';
+go
+ALTER SERVER ROLE dbcreator ADD MEMBER clark;
+go
+USE important_data;
+go
+CREATE USER amara FOR LOGIN amara;
+CREATE USER barry FOR LOGIN barry;
+CREATE USER clark FOR LOGIN clark;
+go
+ALTER ROLE db_owner ADD MEMBER amara;
+ALTER ROLE db_owner ADD MEMBER barry;
+ALTER ROLE db_datareader ADD MEMBER clark;
+ALTER ROLE db_securityadmin ADD MEMBER clark;
+ALTER ROLE db_datawriter ADD MEMBER clark;
+go
+ALTER ROLE db_owner DROP MEMBER barry;
+go
+GRANT SELECT ON OBJECT::houses TO barry;
+GRANT INSERT ON OBJECT::houses TO barry;
+go
+DENY UPDATE ON OBJECT::houses(area) TO barry;
+go
+DENY SELECT ON OBJECT::houses(address) TO barry;
+go
+DROP USER amara;
+go
+"""
+
+invoke_commandline_sql(__db_prepare__, database=None)
+
+invoke_commandline_sql(__student_answer__, database=None)
+
+__sql_verify__ = """
+SELECT name,
+       type_desc,
+       is_disabled
+FROM sys.sql_logins
+WHERE name IN('amara','barry','clark','dante');
+"""
+print("Dump from 'sys.sql_logins':\n")
+print(invoke_cursor_sql(__sql_verify__, database=None))
+
+print("\nChecking users connection:\n")
+
+CFG['password'] = 'NoweP@zzw0rd'
+
+CFG['user'] = 'clark'
+clt = ['/opt/mssql-tools/bin/sqlcmd', '-S', 'tcp:'+CFG['server']+','+str(CFG['port']), '-U', CFG['user'], '-P', CFG['password'], '-d', CFG['database'], '-l', '4', '-t', '4', '-b', '-k1', '-r1', '-C', '-i'+DB_SCRIPT_FILENAME]
+print(invoke_commandline_sql("SELECT 'success' AS 'clark:';", database=None, command_line_tool=clt))]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>08 - create schemas</text>
+    </name>
+    <questiontext format="markdown">
+      <text><![CDATA[Create the following schemas in the `university` database:
+
+* `HumanResources`
+* `StudentOffice`
+
+> Use `sqlcmd` syntax including the `go` command.]]></text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mssql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>CREATE SCHEMA HumanResources;
+go
+CREATE SCHEMA StudentOffice;
+go
+</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>Dump from 'sys.schemas':
+
+             name  schema_id  principal_id
+1  HumanResources          5             1
+2   StudentOffice          6             1
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """USE master;
+CREATE LOGIN bob WITH PASSWORD = 'P@ssw0rd';
+go
+
+CREATE DATABASE university;
+go
+USE university;
+go
+CREATE TABLE student
+(
+    id          INT PRIMARY KEY,
+    name        VARCHAR(50),
+    surname     VARCHAR(50),
+    birthday    DATE,
+    personal_id VARCHAR(50),
+    address     VARCHAR(100),
+    zip_code    VARCHAR(10),
+    email       VARCHAR(50),
+    tuition     MONEY
+);
+go
+INSERT INTO student VALUES
+( 2, 'Belladonna' , 'Sandheaver',  '1947-02-23', '47022329148', '3219 Poplar Lane Miami, FL', '33-176', 'BelladonnaSandheaver@jourrapide.com', 2025),
+( 7, 'Fredegar', 'Greenhand', '1985-07-06', '85070644484', '3311 Laurel Lee Saint Paul, MN', '55-106', 'FredegarGreenhand@teleworm.us', 1024),
+( 9, 'Diamanda', 'Goodchild', '1994-09-14', '94091438255', '1647 Rhode Island Avenue Washington, DC', '20-007', 'DiamandaGoodchild@dayrep.com', 0);
+go
+CREATE TABLE faculty
+(
+    id          INT PRIMARY KEY,
+    name        VARCHAR(50),
+    surname     VARCHAR(50),
+    birthday    DATE,
+    personal_id VARCHAR(50),
+    address     VARCHAR(100),
+    zip_code    VARCHAR(10),
+    email       VARCHAR(50),
+    salary      MONEY
+);
+go
+INSERT INTO faculty VALUES
+( 3, 'Tayla', 'Fairley', '1973-03-26', '73032676844', '1737 Central Avenue Ramsey, NJ 07446', '07-446', 'TaylaFairley@armyspy.com', 4057),
+( 6, 'Evie', 'Cox', '1952-02-26', '52022678499', '3888 Kenwood Place Fort Lauderdale, FL', '33-301', 'EvieCox@dayrep.com',  11754),
+( 12, 'James', 'Buchanan', '1950-05-21', '50052165886', '1176 Cook Hill Road Stamford, CT', '06-902', 'JamesBuchanan@rhyta.com', 7780);
+go
+CREATE USER bob FOR LOGIN bob;
+go
+ALTER ROLE db_datareader ADD MEMBER bob;
+ALTER ROLE db_datawriter ADD MEMBER bob;
+go
+"""
+
+invoke_commandline_sql(__db_prepare__, database=None)
+
+invoke_commandline_sql(__student_answer__, database='university')
+
+__sql_verify__ = """
+SELECT *
+FROM sys.schemas
+WHERE name IN('HumanResources' ,'StudentOffice');
+"""
+print("Dump from 'sys.schemas':\n")
+print(invoke_cursor_sql(__sql_verify__, database='university'))
+]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>09 - change schema owner</text>
+    </name>
+    <questiontext format="markdown">
+      <text><![CDATA[Set the owner of the `HumanResources` schema to the database user account `bob`.
+
+> Use `sqlcmd` syntax including the `go` command.]]></text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mssql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>ALTER AUTHORIZATION ON schema::HumanResources TO bob;
+go
+</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>       SchemaName Principal
+1  HumanResources       bob
+2   StudentOffice       dbo
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """USE master;
+CREATE LOGIN bob WITH PASSWORD = 'P@ssw0rd';
+go
+
+CREATE DATABASE university;
+go
+USE university;
+go
+CREATE TABLE student
+(
+    id          INT PRIMARY KEY,
+    name        VARCHAR(50),
+    surname     VARCHAR(50),
+    birthday    DATE,
+    personal_id VARCHAR(50),
+    address     VARCHAR(100),
+    zip_code    VARCHAR(10),
+    email       VARCHAR(50),
+    tuition     MONEY
+);
+go
+INSERT INTO student VALUES
+( 2, 'Belladonna' , 'Sandheaver',  '1947-02-23', '47022329148', '3219 Poplar Lane Miami, FL', '33-176', 'BelladonnaSandheaver@jourrapide.com', 2025),
+( 7, 'Fredegar', 'Greenhand', '1985-07-06', '85070644484', '3311 Laurel Lee Saint Paul, MN', '55-106', 'FredegarGreenhand@teleworm.us', 1024),
+( 9, 'Diamanda', 'Goodchild', '1994-09-14', '94091438255', '1647 Rhode Island Avenue Washington, DC', '20-007', 'DiamandaGoodchild@dayrep.com', 0);
+go
+CREATE TABLE faculty
+(
+    id          INT PRIMARY KEY,
+    name        VARCHAR(50),
+    surname     VARCHAR(50),
+    birthday    DATE,
+    personal_id VARCHAR(50),
+    address     VARCHAR(100),
+    zip_code    VARCHAR(10),
+    email       VARCHAR(50),
+    salary      MONEY
+);
+go
+INSERT INTO faculty VALUES
+( 3, 'Tayla', 'Fairley', '1973-03-26', '73032676844', '1737 Central Avenue Ramsey, NJ 07446', '07-446', 'TaylaFairley@armyspy.com', 4057),
+( 6, 'Evie', 'Cox', '1952-02-26', '52022678499', '3888 Kenwood Place Fort Lauderdale, FL', '33-301', 'EvieCox@dayrep.com',  11754),
+( 12, 'James', 'Buchanan', '1950-05-21', '50052165886', '1176 Cook Hill Road Stamford, CT', '06-902', 'JamesBuchanan@rhyta.com', 7780);
+go
+CREATE USER bob FOR LOGIN bob;
+go
+ALTER ROLE db_datareader ADD MEMBER bob;
+ALTER ROLE db_datawriter ADD MEMBER bob;
+go
+CREATE SCHEMA HumanResources;
+go
+CREATE SCHEMA StudentOffice;
+go
+"""
+
+invoke_commandline_sql(__db_prepare__, database=None)
+
+invoke_commandline_sql(__student_answer__, database='university')
+
+__sql_verify__ = """
+SELECT  s.name as SchemaName,
+        p.name as Principal
+FROM    sys.schemas as s
+        JOIN sys.database_principals AS p
+          ON s.principal_id = p.principal_id
+WHERE s.name IN ('HumanResources', 'StudentOffice');
+"""
+print(invoke_cursor_sql(__sql_verify__, database='university'))
+]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>10 - drop a SQL Server login</text>
+    </name>
+    <questiontext format="markdown">
+      <text><![CDATA[Drop the SQL Server login `amara`.
+
+> Use `sqlcmd` syntax including the `go` command.]]></text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mssql_dockerized_v2.1</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>7</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace></useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <allowmultiplestdins></allowmultiplestdins>
+    <answer>DROP LOGIN amara;
+go
+</answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin></uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000" >
+      <testcode>
+                <text></text>
+      </testcode>
+      <stdin>
+                <text></text>
+      </stdin>
+      <expected>
+                <text>    name  type_desc
+1  barry  SQL_LOGIN
+</text>
+      </expected>
+      <extra>
+                <text><![CDATA[__db_prepare__ = """
+CREATE LOGIN amara WITH PASSWORD = 'P@zzw0rd';
+CREATE LOGIN barry WITH PASSWORD = 'P@zzw0rd';
+go
+"""
+invoke_commandline_sql(__db_prepare__, database=None)
+
+invoke_commandline_sql(__student_answer__, database=None)
+
+__sql_verify__ = """
+SELECT name, type_desc
+FROM sys.sql_logins
+WHERE name IN ('amara', 'barry');
+"""
+print(invoke_cursor_sql(__sql_verify__, database=None))
+]]></text>
+      </extra>
+      <display>
+                <text>SHOW</text>
+      </display>
+    </testcase>
+    </testcases>
+  </question>
+
+</quiz>

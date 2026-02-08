@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+  <question type="coderunner">
+    <name>
+      <text>_USER_DEFINED_PROTOTYPE_mssql_dockerized_v2.1</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>This question template is based on <a href="https://github.com/andre-wojtowicz/coderunner-dba-dataed2026">GRANT Privileges, REVOKE Risk: Safe and Scalable Teaching of Database Administration with Isolated Containers</a> paper by <a href="https://awojt.pl">A. Wójtowicz</a> and M. Prill presented during <a href="https://dataedinitiative.github.io/DataEd26/index.html">DataEd</a> workshop of the <a href="https://edbticdt2026.github.io/">EDBT/ICDT</a> joint conference in 2026.</p>
+<h4>MSSQL-dockerized</h4>
+<p>A teacher working on a new question has to provide a standard question description, an example answer for validation and test cases. The basic setup of a test case requires code in the <strong>Extra template data</strong> section which uses Python functions provided by the template. Verification of a test case is done by textual output comparison. When a database engine reports an error it is displayed to the student.</p>
+<p>The following subsections briefly describe how a test case is prepared depending on the question type. This question template starts a fresh isolated Docker container for each test case evaluation and stops it at the end. The container grants full administrative access to the database engine, enabling practice with DCL commands such as <code>GRANT</code> and <code>REVOKE</code> that are not feasible in a shared-server environment. These general guidelines use Python code and can be customized by the teacher accordingly to the course requirements.</p>
+<h4>Python Functions</h4>
+<p>Two Python functions are available for executing SQL in a test case:</p>
+<ul>
+<li>
+<p><strong><code>invoke_commandline_sql(db_code, database='test_case',
+          timeout=30, command_line_tool=CMDLINE_SQLCMD,
+          ignore_warnings=False)</code></strong> - executes SQL by spawning the <code>sqlcmd</code> command-line tool as a subprocess. The <code>command_line_tool</code> parameter can be set to a different binary or argument list when needed. Output is strictly textual. Errors and timeouts terminate the entire script.</p>
+</li>
+<li>
+<p><strong><code>invoke_cursor_sql(db_code, database='test_case',
+          sort_result=False)</code></strong> - executes SQL through a database cursor and formats the result as a pandas DataFrame string. Suitable when structured tabular output is needed.</p>
+</li>
+</ul>
+<p>Both functions accept a <code>database=</code> parameter - when set to a database name it prepends <code>USE &lt;name&gt;;\ngo</code> to the SQL; <code>None</code> or <code>False</code> runs at the server default level.</p>
+<h4>DQL Question Type</h4>
+<p>This type of question uses the <code>SELECT</code> command to extract data from a database. In <strong>Extra template data</strong> section of a test case, firstly, a database is filled with tables, data, etc.; secondly, a student's answer is invoked with output printed on the standard output. Since validation is done in a textual way, the teacher should either a) explicitly put in the question description what columns should the student use to sort results by <code>ORDER BY</code> clause; or b) configure the script to sort rows in a pre-processing step before printing to the standard output. See sample code below:</p>
+<pre><code class="language-python">__sql_prepare__ = r'''
+-- database init commands e.g. CREATE DATABASE, CREATE TABLE, INSERT etc.
+-- ...
+'''
+
+invoke_commandline_sql(__sql_prepare__, database=None)
+print(invoke_commandline_sql(__student_answer__, database=None))
+</code></pre>
+<h4>DDL/DML Question Type</h4>
+<p>This type of question checks a student's ability to modify a database, e.g. with <code>CREATE</code>, <code>INSERT</code> etc. commands. In <strong>Extra template data</strong> section of a test case, firstly, a database is prepared at server level; secondly, a student's answer is invoked in the target database; thirdly, a verification <code>SELECT</code> query is invoked with output printed on standard output. See sample code below:</p>
+<pre><code class="language-python">__sql_prepare__ = r'''
+-- server-level init e.g. CREATE DATABASE mydb, CREATE TABLE etc.
+-- ...
+'''
+
+__sql_verify__ = r'''
+-- statement checking database structure e.g. SELECT data about
+-- columns in a table using INFORMATION_SCHEMA view; test code can be
+-- provided here or in 'Test code X' section of a test case
+-- ...
+'''
+
+invoke_commandline_sql(__sql_prepare__, database=None)
+invoke_commandline_sql(__student_answer__, database=None)
+print(invoke_commandline_sql(__sql_verify__, database=None))
+</code></pre>
+<h4>DCL Question Type</h4>
+<p>This type of question checks a student's ability to manage access control, e.g. with <code>GRANT</code>, <code>REVOKE</code>, <code>DENY</code> etc. commands. In <strong>Extra template data</strong> section of a test case, firstly, the necessary logins, users and objects are created; secondly, a student's answer is invoked; thirdly, a verification query inspects the privilege state and prints it on standard output. See sample code below:</p>
+<pre><code class="language-python">__sql_prepare__ = r'''
+-- init commands e.g. CREATE LOGIN mylogin, CREATE DATABASE mydb,
+-- CREATE USER myuser FOR LOGIN mylogin etc.
+-- ...
+'''
+
+__sql_verify__ = r'''
+-- statement checking privilege state e.g. SELECT from
+-- sys.database_permissions, sys.server_permissions,
+-- fn_my_permissions() etc.
+-- ...
+'''
+
+invoke_commandline_sql(__sql_prepare__, database=None)
+invoke_commandline_sql(__student_answer__, database=None)
+print(invoke_commandline_sql(__sql_verify__, database=None))
+</code></pre>
+<h4>Other types of assignments</h4>
+<p>Above we described DQL, DML, DDL and DCL queries but our solution is able to cover problems where a student has to write e.g. SQL script, stored procedures, functions, backup and restore operations etc., as long as created objects persist within the duration of the Docker container for that test case. In the above examples we used <code>invoke_commandline_sql(...)</code> which uses by default the <code>sqlcmd</code> command-line tool and produces strictly textual output. For questions where programmatic investigation of structured tabular output is needed, <code>invoke_cursor_sql(...)</code> can be used instead as it processes data through a database cursor.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="markdown">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1</defaultgrade>
+    <penalty>0</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <coderunnertype>mssql_dockerized_v2.1</coderunnertype>
+    <prototypetype>2</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <hidecheck>0</hidecheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <globalextra></globalextra>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template><![CDATA[# v2026-03-18
+import sys
+import site
+import os
+venv_path = "/opt/venv/mssql-dockerized"
+sys.path.insert(0, os.path.join(venv_path, "lib", "python3.11", "site-packages"))
+site.addsitedir(os.path.join(venv_path, "lib", "python3.11", "site-packages"))
+os.environ["VIRTUAL_ENV"] = venv_path
+os.environ["PATH"] = f"{venv_path}/bin:" + os.environ["PATH"]
+
+import time
+import getpass
+import re
+import subprocess
+import pandas
+import docker
+import pymssql
+from pymssql import _mssql
+
+# The server port to use. When running without Jobe this is just '138', but
+# when in Jobe it'll become a combination of the current Jobe user.
+# For jobe00 it'll be 13800, for jobe01 13801 and so on.
+#
+# When there are multiple Docker question types this must be unique, and
+# the combined number must be lower than max port number - 65535.
+PORT = int('138'+''.join(filter(str.isdigit, getpass.getuser())))
+DOCKER_IMAGE = 'jobe-mssql:2019-CU30'
+DOCKER_NAME = 'jobe-mssql_' + str(PORT)
+DOCKER_PORT = {'1433/tcp': PORT}
+DOCKER_TMPFS = {'/var': 'size=256M'}
+CFG = {
+    'user': 'jobe_runner',
+    'password': 'jobe_runner',
+    'server': '127.0.0.1',
+    'port': PORT,
+    'database': 'tempdb',
+    'autocommit': True,
+    'encryption' : 'off'
+}
+# sqlcmd is not able to handle stdin so a file must be created
+DB_SCRIPT_FILENAME = "db.sql"
+CMDLINE_SQLCMD = [
+    '/opt/mssql-tools/bin/sqlcmd',
+    '-S', 'tcp:'+CFG['server']+','+str(CFG['port']),
+    '-U', CFG['user'],
+    '-P', CFG['password'],
+    '-d', CFG['database'],
+    '-l', '4', # login_timeout
+    '-t', '29', # query_timeout  # CHANGE: 14 -> 29
+    '-b', # terminate batch job if there is an error
+    '-k1', # convert control characters to spaces in output
+    '-r1', # redirect warnings to stderr
+    '-C', # accept self-signed TLS certificates
+    '-i'+DB_SCRIPT_FILENAME # bug in tools 17.5 requires no space in -i
+    ]
+
+
+START_TIME = time.time()
+def DEBUG_TIME(string):
+    """ Outputs time since last invocation with a description, used for debugging. """
+    global START_TIME
+    #print("- %s - %s" % (string, (time.time() - START_TIME)))
+    START_TIME = time.time()
+
+def create_container():
+    """ Checks if there is a created docker instance with the right image version. """
+    docker_client = docker.from_env()
+    try:
+        curr = docker_client.containers.get(DOCKER_NAME)
+        if curr.image.tags[0] != DOCKER_IMAGE:
+            curr.remove(force=True)
+            DEBUG_TIME('recreate')
+            raise docker.errors.NotFound("wrong version")
+        return curr
+    except docker.errors.NotFound:
+        # if it doesn't then create a new one
+        DEBUG_TIME('create')
+        return docker_client.containers.create(
+            image=DOCKER_IMAGE,
+            name=DOCKER_NAME,
+            read_only=True,
+            ports=DOCKER_PORT,
+            tmpfs=DOCKER_TMPFS
+            )
+
+def wait_for_connection(timeout=10.0):
+    """ Attempts to connect to the server with a backoff time until timeout is reached. """
+    while True:
+        try:
+            with _mssql.connect(
+                    server=CFG['server'],
+                    port=CFG['port'],
+                    user=CFG['user'],
+                    password=CFG['password'],
+                    database=CFG['database']) as conn:
+                conn.close()
+            return pymssql.connect(
+                server=CFG['server'],
+                port=CFG['port'],
+                user=CFG['user'],
+                password=CFG['password'],
+                database=CFG['database'],
+                login_timeout=3,
+                autocommit=CFG['autocommit'])
+        except _mssql.MSSQLDatabaseException as ex:
+            time.sleep(0.1)
+            if time.time() - START_TIME >= timeout:
+                raise TimeoutError('Waited too long for server to start.') from ex
+
+def cleanup():
+    """ Cleans up resources. """
+    cursor.close()
+    connection.close()
+    container.stop(timeout=0)
+    DEBUG_TIME("stop")
+
+def fail_with_error(error_string):
+    print(error_string, file=sys.stderr)
+    cleanup()
+    sys.exit(1)
+
+def invoke_commandline_sql(db_code,
+                           database='test_case', 
+                           timeout=30, # CHANGE: 15 -> 30
+                           command_line_tool=CMDLINE_SQLCMD,
+                           ignore_warnings=False):
+    """ Invokes given SQL via a command line tool.
+    Errors and timeout will exit the entire script.
+
+    Keyword arguments:
+    db_code -- SQL to invoke
+    database -- database to execute the query in, can be False to disable the feature
+    timeout -- timeout which MUST BE LESS THAN DEFAULT FOR QUESTION TYPE
+    ignore_warnings -- whether to ignore warnings, by default False, status messages are also warnings
+    """
+    with open(DB_SCRIPT_FILENAME, "w") as f:
+        if database:
+            f.write("USE %s;\ngo\n" % database)
+        f.write(db_code)
+
+    try:
+        # to stop mssql-cli from enabling telemetry by default
+        # we create a copy of the host environment and put the required variable there
+        newenv = os.environ.copy()
+        newenv['MSSQL_CLI_TELEMETRY_OPTOUT'] = "True"
+        db_outcome = subprocess.run(
+            command_line_tool,
+            #input=db_code, sqlcmd needs a file as input parameter
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout,
+            universal_newlines=True,
+            check=False,
+            env=newenv
+        )
+    except subprocess.TimeoutExpired as e:
+        fail_with_error(f'''[1] SQL invocation timed out: {e}\n{e.stdout}\n{e.stderr}''')
+    if db_outcome.returncode == 0 and db_outcome.stdout.rstrip().endswith("Timeout expired"):
+        fail_with_error(f'''[2] SQL invocation timed out: {e}''')
+    elif db_outcome.returncode != 0:
+        fail_with_error(f'''[3] SQL invocation failed
+Process exit code: {db_outcome.returncode}
+Server response:
+{db_outcome.stdout}
+{db_outcome.stderr}
+''')
+    if db_outcome.stderr and not ignore_warnings:
+        return f'''{db_outcome.stdout}\n{db_outcome.stderr}'''
+    return db_outcome.stdout
+
+def invoke_cursor_sql(db_code, database='test_case', sort_result=False):
+    """ Invokes given SQL via the cursor.
+    Warnings will be appended to result.
+    Errors will exit the entire script.
+
+    Keyword arguments:
+    db_code -- SQL to invoke
+    database -- database to execute the query in, can be False to disable the feature
+    sort_result -- output sorted (by sorted list of all columns, ascending) results, by default False
+    """
+    warn_msg = None
+    try:
+        if database:
+            db_code = "USE %s;\n" % database + db_code
+        cursor.execute(db_code)
+    except pymssql.Warning as e:
+        warn_msg = e.args[1].decode('utf-8')
+    except pymssql.Error as e:
+        fail_with_error(e.args[1].decode('utf-8').replace('DB-Lib error message', '\nDB-Lib error message'))
+
+    try:
+        rows = cursor.fetchall()
+        cols = [x[0] for x in cursor.description]
+        if rows:
+            df = pandas.DataFrame(rows, range(1, len(rows)+1), cols)
+            if sort_result:
+                df.sort_values(by=list(df.columns), inplace=True)
+                answer_result = df[sorted(cols)].fillna(value="NULL").to_string(index=False)
+            else:
+                answer_result = df.fillna(value="NULL").to_string()
+        else:
+            answer_result = '   '.join(cols)
+    except pymssql.OperationalError as e:
+        if e.args[0] == 'Statement not executed or executed statement has no resultset':
+            answer_result = "{no data}"
+        else:
+            fail_with_error(e.args[0].replace('DB-Lib error message', '\nDB-Lib error message'))
+
+    if warn_msg is not None:
+        answer_result = '{0}\n{1}'.format(answer_result, warn_msg)
+
+    return answer_result
+
+__student_answer__ = """
+{{ STUDENT_ANSWER }}
+""".strip("\n")
+
+SEPARATOR = "#<ab@17943918#@>#"
+
+{% for TEST in TESTCASES %}
+container = create_container()
+DEBUG_TIME('client')
+
+# if it's running stop it
+# since everything runs in tmpfs with read-only root this resets the state
+if container.status == 'running':
+    container.stop(timeout=0)
+container.start()
+DEBUG_TIME('start')
+
+# wait for connection to be ready
+connection = wait_for_connection()
+DEBUG_TIME('connection')
+
+cursor = connection.cursor()
+
+__testcode__ = """
+{{ TEST.testcode }}
+""".strip("\n")
+
+{{ TEST.extra }}
+
+cleanup()
+
+{% if not loop.last %}
+print(SEPARATOR)
+{% endif %}
+{% endfor %}
+]]></template>
+    <iscombinatortemplate>1</iscombinatortemplate>
+    <allowmultiplestdins>0</allowmultiplestdins>
+    <answer></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre><![CDATA[|#<ab@17943918#@>#\n|ms]]></testsplitterre>
+    <language>python3</language>
+    <acelang>SQLServer</acelang>
+    <sandbox></sandbox>
+    <grader>EqualityGrader</grader>
+    <cputimelimitsecs>60</cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <hoisttemplateparams>1</hoisttemplateparams>
+    <extractcodefromjson>1</extractcodefromjson>
+    <templateparamslang>twig</templateparamslang>
+    <templateparamsevalpertry>0</templateparamsevalpertry>
+    <templateparamsevald>{}</templateparamsevald>
+    <twigall>0</twigall>
+    <uiplugin>ace</uiplugin>
+    <uiparameters></uiparameters>
+    <attachments>0</attachments>
+    <attachmentsrequired>0</attachmentsrequired>
+    <maxfilesize>10240</maxfilesize>
+    <filenamesregex></filenamesregex>
+    <filenamesexplain></filenamesexplain>
+    <displayfeedback>1</displayfeedback>
+    <giveupallowed>0</giveupallowed>
+    <prototypeextra></prototypeextra>
+    <testcases>
+    </testcases>
+  </question>
+
+</quiz>

@@ -1,0 +1,2 @@
+[mysqld]
+tmpdir = /var/run/mysqld
